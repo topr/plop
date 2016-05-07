@@ -1,0 +1,37 @@
+/usr/lib/nux/unity_support_test -p
+
+sudo apt-get update
+sudo apt-get upgrade 
+
+sudo reboot
+
+sudo apt-get install chromium-browser
+sudo apt-get install git
+sudo apt-get install tree
+sudo apt-get install vim
+
+---
+
+wget -P ~/Downloads/ --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-x64.tar.gz
+
+wget -P ~/Downloads/ --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u77-b03/jdk-8u77-linux-x64.tar.gz
+
+mkdir -p ~/devel/soft/jdk
+
+tar xzf ~/Downloads/jdk-7u79-linux-x64.tar.gz -C ~/devel/soft/jdk/
+ln -s ~/devel/soft/jdk/jdk1.7.0_79/ ~/devel/soft/jdk/java7
+
+tar xzf ~/Downloads/jdk-8u77-linux-x64.tar.gz -C ~/devel/soft/jdk/
+ln -s ~/devel/soft/jdk/jdk1.8.0_77/ ~/devel/soft/jdk/java8
+
+ln -s ~/devel/soft/jdk/java8 ~/devel/soft/jdk/current
+
+---
+
+cd ~
+git clone https://github.com/magicmonty/bash-git-prompt.git .bash-git-prompt --depth=1
+
+Add to the ~/.bashrc:
+
+  source ~/.bash-git-prompt/gitprompt.sh
+  GIT_PROMPT_ONLY_IN_REPO=1
