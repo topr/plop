@@ -1,0 +1,8 @@
+import plop.server.Plop
+
+model {
+	Iterable<Plop> plopList
+}
+
+json tmpl.plop(plopList ?: [])
+
