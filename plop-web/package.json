@@ -13,6 +13,10 @@
     "webpack": "^1.13.1"
   },
   "scripts": {
+    "postinstall": "npm run build",
+    "build": "webpack ./entry.js bundle.js -d",
+    "pack": "npm run build -- -p",
+    "watch": "npm run build -- -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
