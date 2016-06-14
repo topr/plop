@@ -1,0 +1,17 @@
+{
+  "name": "plop-web",
+  "version": "0.0.1",
+  "description": "Ploppety Plop",
+  "main": "bundle.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/topr/plop.git/plop-web"
+  },
+  "author": "Tomasz Przybysz <tomasz.przybysz@gmail.com>",
+  "license": "WTFPL"
+}
