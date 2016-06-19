@@ -1,7 +1,9 @@
 module.exports = {
+    context: __dirname,
     entry: './src/main/javascript/entry.js',
     output: {
-        filename: './build/plop-web.bundle.js'
+        path: './build/js',
+        filename: 'plop-web.bundle.js'
     },
     devtool: 'source-map',
     module: {
