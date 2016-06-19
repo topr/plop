@@ -25,12 +25,12 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.9.0"
+    "webpack-dev-server": "^1.9.0",
+    "webpack-fail-plugin": "^1.0.4"
   },
   "scripts": {
-    "postinstall": "npm run watch",
     "clean": "rm -rf build/",
-    "build": "webpack -p",
+    "assemble": "webpack -p",
     "watch": "webpack-dev-server --inline --hot --port 9090 --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

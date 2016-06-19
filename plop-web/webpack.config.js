@@ -2,7 +2,7 @@ module.exports = {
     context: __dirname,
     entry: './src/main/javascript/app.js',
     output: {
-        path: './build/js',
+        path: './build',
         filename: 'plop-web.js'
     },
     devtool: 'source-map',
@@ -22,5 +22,8 @@ module.exports = {
                 loader: 'babel-loader',
             }
         ]
-    }
+    },
+    plugins: [
+        require('webpack-fail-plugin')
+    ]
 };

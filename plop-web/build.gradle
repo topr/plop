@@ -1,0 +1,16 @@
+plugins {
+    id 'com.moowork.node' version '0.12' // ref: https://github.com/srs/gradle-node-plugin
+}
+
+task assemble(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ['run', 'assemble']
+    inputs.dir 'src/main'
+    inputs.files 'package.json', 'webpack.config.js'
+    outputs.dir buildDir
+}
+
+task build(dependsOn: 'assemble')
+
+task clean(type: Delete) {
+    delete buildDir
+}
