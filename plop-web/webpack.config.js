@@ -1,9 +1,11 @@
 module.exports = {
     context: __dirname,
-    entry: './src/main/javascript/app.js',
+    entry: {
+        'amd-module.example': './src/main/javascript/example/amd-module/app.js'
+    },
     output: {
         path: './build',
-        filename: 'plop-web.js'
+        filename: '[name].js'
     },
     devtool: 'source-map',
     module: {
