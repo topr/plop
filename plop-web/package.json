@@ -2,14 +2,20 @@
   "name": "plop-web",
   "version": "0.0.1",
   "description": "Ploppety Plop",
-  "main": "bundle.js",
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
+  "author": "Tomasz Przybysz <tomasz.przybysz@gmail.com>",
+  "license": "WTFPL",
+  "scripts": {
+    "clean": "rm -rf build/",
+    "assemble": "webpack -p",
+    "watch": "webpack-dev-server --port 9090 --inline --hot --config webpack.config.js --content-base public/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/topr/plop.git/plop-web"
   },
   "dependencies": {
-    "react": "^15.1.0",
+    "find-file-in-dirs": "^1.0.2",
     "moment": "^2.10.3"
   },
   "devDependencies": {
@@ -20,6 +26,7 @@
     "babel-preset-react": "^6.5.0",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
+    "fs-readdir-recursive": "^1.0.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
     "style-loader": "^0.13.1",
@@ -28,16 +35,9 @@
     "webpack-dev-server": "^1.9.0",
     "webpack-fail-plugin": "^1.0.4"
   },
-  "scripts": {
-    "clean": "rm -rf build/",
-    "assemble": "webpack -p",
-    "watch": "webpack-dev-server --inline --hot --port 9090 --config webpack.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/topr/plop.git/plop-web"
-  },
-  "author": "Tomasz Przybysz <tomasz.przybysz@gmail.com>",
-  "license": "WTFPL"
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
 }
