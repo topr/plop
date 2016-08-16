@@ -17,6 +17,12 @@ apply plugin:'war'
 apply plugin:'org.grails.grails-web'
 apply plugin:'org.grails.plugins.views-json'
 
+test { // or tasks.withType(Test) (needed for Android build)
+    testLogging {
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+    }
+}
+
 repositories {
     mavenLocal()
     maven { url 'https://repo.grails.org/grails/core' }
