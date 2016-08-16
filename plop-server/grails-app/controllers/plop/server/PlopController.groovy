@@ -6,12 +6,12 @@ import grails.transaction.Transactional
 @Transactional(readOnly = true)
 class PlopController {
 
+    static defaultAction = 'list'
     static responseFormats = ['json', 'xml']
     static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond Plop.list(params), model: [plopCount: Plop.count()]
+    def list() {
+        respond Plop.all
     }
 
     def show(Plop plop) {
@@ -34,7 +34,7 @@ class PlopController {
 
         plop.save flush: true
 
-        respond plop, [status: CREATED, view: "show"]
+        respond plop, [status: CREATED, view: 'show']
     }
 
     @Transactional
