@@ -10,6 +10,8 @@ appender('STDOUT', ConsoleAppender) {
 
 root(ERROR, ['STDOUT'])
 
+logger('plop.server', INFO)
+
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.developmentMode && targetDir) {
     appender('FULL_STACKTRACE', FileAppender) {
