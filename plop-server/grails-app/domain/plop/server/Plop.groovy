@@ -7,4 +7,8 @@ class Plop {
 
     Date dateCreated
     String text
+
+    Plop(String text) {
+        this.text = text
+    }
 }
