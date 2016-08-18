@@ -1,5 +1,8 @@
 package plop.server
 
+import groovy.transform.ToString
+
+@ToString(includePackage = false, includes = 'text')
 class Plop {
 
     static constraints = {

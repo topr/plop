@@ -5,9 +5,10 @@ Server
  - [ ] store a plop
     - [ ] update a plop
     - [ ] create a plop
- - [ ] serve all plops
- - [ ] count plops
+ - [x] list all plops
+ - [x] count plops
  - [ ] go live
     - [ ] where to host?
+    - [ ] deploy
     
 

@@ -18,6 +18,10 @@ class PlopController {
         respond plop
     }
 
+    def count() {
+        respond count: Plop.count
+    }
+
     @Transactional
     def save(Plop plop) {
         if (plop == null) {

@@ -1,7 +1,8 @@
 package plop.server
 
-import grails.test.mixin.*
-import spock.lang.*
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 import static org.springframework.http.HttpStatus.*
 
@@ -9,22 +10,56 @@ import static org.springframework.http.HttpStatus.*
 @TestFor(PlopController)
 class PlopControllerSpec extends Specification {
 
-    private void populateValidParams(Map<String, Object> params) {
-        assert params != null
-        params.dateCreated = new Date()
-        params.text = 'Plop!'
+    def 'Responds with empty list when no plops'() {
+        when: controller.list()
+        then: response.text == '[]'
     }
 
-    void 'Test the index action returns the correct response'() {
+    void 'List all plops'() {
 
-        when: 'The index action is executed'
-            controller.index()
+        given:
+            int amount = 11
+            saveAll(plops(amount))
 
-        then: 'The response is correct'
-            response.text == '[]'
+        when:
+            controller.list()
+
+        then:
+            response.contentType.contains(JSON_CONTENT_TYPE)
+            response.json.size() == amount
     }
 
-    void 'Test the save action correctly persists an instance'() {
+    void 'Count plops'() {
+
+        given:
+            saveAll(plops(11))
+
+        when:
+            controller.count()
+
+        then:
+            response.contentType.contains(JSON_CONTENT_TYPE)
+            response.json == [count: 11]
+    }
+
+    void 'Stores a valid plop'() {
+
+        given:
+            request.contentType = JSON_CONTENT_TYPE
+            request.method = 'POST'
+
+        when: 'The save action is executed with a valid instance'
+            controller.save(plop())
+
+        then: 'Added plop is in store'
+            Plop.count() == 1
+
+        and: 'A redirect is issued to the show action'
+            response.status == CREATED.value()
+            response.json
+    }
+
+    void 'Fails on invalid plop storing attempt'() {
 
         when: 'The save action is executed with an invalid instance'
             request.contentType = JSON_CONTENT_TYPE
@@ -36,37 +71,6 @@ class PlopControllerSpec extends Specification {
         then: 'The create view is rendered again with the correct model'
             response.status == UNPROCESSABLE_ENTITY.value()
             response.json.errors
-
-        when: 'The save action is executed with a valid instance'
-            response.reset()
-            populateValidParams(params)
-            plop = new Plop(params)
-
-            controller.save(plop)
-
-        then: 'A redirect is issued to the show action'
-            Plop.count() == 1
-            response.status == CREATED.value()
-            response.json
-    }
-
-    void 'Test that the show action returns the correct model'() {
-        when: 'The show action is executed with a null domain'
-            controller.show(null)
-
-        then: 'A 404 error is returned'
-            response.status == 404
-
-        when: 'A domain instance is passed to the show action'
-            populateValidParams(params)
-            response.reset()
-            def plop = new Plop(params).save()
-            controller.show(plop)
-
-        then: 'A model is populated containing the domain instance'
-            plop != null
-            response.status == OK.value()
-            response.json
     }
 
     void 'Test the update action performs an update on a valid domain instance'() {
@@ -90,7 +94,7 @@ class PlopControllerSpec extends Specification {
 
         when: 'A valid domain instance is passed to the update action'
             response.reset()
-            populateValidParams(params)
+            validParams(params)
             plop = new Plop(params).save(flush: true)
             controller.update(plop)
 
@@ -112,7 +116,7 @@ class PlopControllerSpec extends Specification {
 
         when: 'A domain instance is created'
             response.reset()
-            populateValidParams(params)
+            validParams(params)
             def plop = new Plop(params).save(flush: true)
 
         then: 'It exists'
@@ -124,5 +128,34 @@ class PlopControllerSpec extends Specification {
         then: 'The instance is deleted'
             Plop.count() == 0
             response.status == NO_CONTENT.value()
+    }
+
+    private Map validParams(Map paramz = [:]) {
+        paramz.text = 'Plop!'
+
+        return paramz
+    }
+
+    private Iterable<Plop> plops(int howMany) {
+        return {
+            int count = howMany
+            [
+                    next   : { plop("plop ${howMany - --count}") },
+                    hasNext: { count > 0 }
+            ] as Iterator<Plop>
+        }
+    }
+
+    private plop(String text = 'plop!') {
+        new Plop(text: text)
+    }
+
+    private static saveAll(Iterable<Plop> items) {
+        return items.collect {
+            it.save(
+                    flush: true,
+                    failOnError: true
+            )
+        }
     }
 }
