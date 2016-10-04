@@ -1,14 +1,18 @@
 Server
 ======
 
- - [ ] show a plop
- - [ ] store a plop
-    - [ ] update a plop
-    - [ ] create a plop
+ - [x] show a plop
+ - [x] store a plop
+    - [x] update a plop
+    - [x] create a plop
  - [x] list all plops
  - [x] count plops
- - [ ] go live
-    - [ ] where to host?
-    - [ ] deploy
+ - [ ] delete plop
+ - [x] go live
+    - [x] where to host?
+    - [x] deploy
+ - [ ] automate deployment
+    - [ ] single command
+    - [ ] CD
     
 
