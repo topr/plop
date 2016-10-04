@@ -19,7 +19,7 @@ class PlopControllerSpec extends Specification {
 
         given:
             int amount = 11
-            saveAll(plops(amount))
+            saveAll(validPlops(amount))
 
         when:
             controller.list()
@@ -32,24 +32,22 @@ class PlopControllerSpec extends Specification {
     void 'Count plops'() {
 
         given:
-            saveAll(plops(11))
+            saveAll(validPlops(6))
 
         when:
             controller.count()
 
         then:
             response.contentType.contains(JSON_CONTENT_TYPE)
-            response.json == [count: 11]
+            response.json == [count: 6]
     }
 
-    void 'Stores a valid plop'() {
+    void 'Stores a new valid plop'() {
 
-        given:
+        when:
             request.contentType = JSON_CONTENT_TYPE
             request.method = 'POST'
-
-        when: 'The save action is executed with a valid instance'
-            controller.save(plop())
+            controller.save(validPlop())
 
         then: 'Added plop is in store'
             Plop.count() == 1
@@ -59,49 +57,78 @@ class PlopControllerSpec extends Specification {
             response.json
     }
 
-    void 'Fails on invalid plop storing attempt'() {
+    void 'Fails with 404 when receives no plop to store'() {
 
-        when: 'The save action is executed with an invalid instance'
+        when:
             request.contentType = JSON_CONTENT_TYPE
             request.method = 'POST'
-            def plop = new Plop()
-            plop.validate()
-            controller.save(plop)
+            controller.save(null)
+
+        then: 'The create view is rendered again with the correct model'
+            response.status == NOT_FOUND.value()
+    }
+
+    void 'Fails upon a new invalid plop storing attempt'() {
+
+        when:
+            request.contentType = JSON_CONTENT_TYPE
+            request.method = 'POST'
+            controller.save(invalidPlop())
 
         then: 'The create view is rendered again with the correct model'
             response.status == UNPROCESSABLE_ENTITY.value()
             response.json.errors
     }
 
-    void 'Test the update action performs an update on a valid domain instance'() {
-        when: "Update is called for a domain instance that doesn't exist"
+    void 'Fails with 404 on update for non-existing plop'() {
+
+        expect:
+            Plop.count == 0
+
+        when:
             request.contentType = JSON_CONTENT_TYPE
             request.method = 'PUT'
-            controller.update(null)
+            controller.update(plop)
 
-        then: 'A 404 error is returned'
+        then:
             response.status == NOT_FOUND.value()
 
-        when: 'An invalid domain instance is passed to the update action'
-            response.reset()
-            def plop = new Plop()
-            plop.validate()
+        where:
+            plop << [null, validPlop(), invalidPlop()]
+    }
+
+    def 'Fails upon invalid plop update attempt'() {
+
+        given:
+            def plop = invalid(existingPlop())
+
+        when:
+            request.contentType = JSON_CONTENT_TYPE
+            request.method = 'PUT'
             controller.update(plop)
 
         then: 'The edit view is rendered again with the invalid instance'
             response.status == UNPROCESSABLE_ENTITY.value()
             response.json.errors
+    }
 
-        when: 'A valid domain instance is passed to the update action'
-            response.reset()
-            validParams(params)
-            plop = new Plop(params).save(flush: true)
+    void 'Updates a valid existing plop'() {
+
+        given:
+            def plop = existingPlop()
+            plop.text = 'updated text'
+
+        when:
+            request.contentType = JSON_CONTENT_TYPE
+            request.method = 'PUT'
             controller.update(plop)
 
-        then: 'A redirect is issued to the show action'
-            plop != null
+        then:
             response.status == OK.value()
             response.json.id == plop.id
+
+        and:
+            Plop.get(plop.id).text == 'updated text'
     }
 
     void 'Test that the delete action deletes an instance if it exists'() {
@@ -136,26 +163,46 @@ class PlopControllerSpec extends Specification {
         return paramz
     }
 
-    private Iterable<Plop> plops(int howMany) {
+    private static Iterable<Plop> validPlops(int howMany) {
         return {
             int count = howMany
             [
-                    next   : { plop("plop ${howMany - --count}") },
+                    next   : { validPlop("plop ${howMany - --count}") },
                     hasNext: { count > 0 }
             ] as Iterator<Plop>
         }
     }
 
-    private plop(String text = 'plop!') {
-        new Plop(text: text)
+    private static existingPlop() {
+        save(validPlop())
     }
 
-    private static saveAll(Iterable<Plop> items) {
-        return items.collect {
-            it.save(
-                    flush: true,
-                    failOnError: true
-            )
-        }
+    private static validPlop(String text = 'plop!') {
+        def plop = new Plop(text: text)
+        assert plop.validate()
+
+        return plop
+    }
+
+    private static invalidPlop() {
+        invalid(new Plop())
+    }
+
+    private static Plop invalid(Plop plop) {
+        plop.text = null
+        assert !plop.validate()
+
+        return plop
+    }
+
+    private static List<Plop> saveAll(Iterable<Plop> items) {
+        items.collect { save(it) }
+    }
+
+    private static Plop save(Plop plop) {
+        plop.save(
+                flush: true,
+                failOnError: true
+        )
     }
 }

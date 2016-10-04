@@ -43,7 +43,7 @@ class PlopController {
 
     @Transactional
     def update(Plop plop) {
-        if (plop == null) {
+        if (!Plop.exists(plop?.id)) {
             transactionStatus.setRollbackOnly()
             render status: NOT_FOUND
             return
